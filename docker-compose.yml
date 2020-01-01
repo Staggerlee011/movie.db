@@ -1,0 +1,25 @@
+version: '2.1'
+
+services:
+  flyway:
+    image: flyway/flyway
+    command: -url=jdbc:postgresql://postgres:5432/movies -schemas=public -user=postgres -password=mysecretpassword migrate
+    volumes:
+      - ./sql:/flyway/sql
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres
+    build: ./sql
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=mysecretpassword
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-U", "postgres"]
+      interval: 5s
+      timeout: 1s
+      retries: 2
