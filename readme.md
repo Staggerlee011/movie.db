@@ -1,19 +1,18 @@
-# movie.db
+# solution
 
-database for testing flyway by redgate on postgres, connects to a dotnet core api.
+Postgres database automated testing / development environment.
 
-## basic config
+## docker-compose
 
-- download flyway docker image
+`docker-compose up` will run the following:
 
-    `docker pull flyway/flyway`
+- postgres container with a db called: `awesome_hotel_booking`
+- flyway container to deploy sql scripts found in the sql folder
+- pgtap container to run unit tests on the postgres db
+- pgadmin container to have client to connect to postgres db
 
-- pull and run a local postgres image (note we create the db for flyway at run with postgres_db)
+## pgadmin
 
-    `docker run --name postgres -e POSTGRES_PASSWORD=mysecretpassword -e POSTGRES_DB=movies -p 5432:5432 -d postgres`
+connect to postgres db via url: [http://localhost:16543/](http://localhost:16543/)
 
-- create docker vol for the movie.db sql folder in the flyway db to run against DOES NOT WORK!!!
 
-    `docker run --rm flyway/flyway -v C:/temp/flyway-6.1.3/sql:/flyway/sql -v C:/temp/flyway-6.1.3/conf:/flyway/conf migrate`
-
-- docker-compose file (DOES NOT WORK!)
