@@ -1,6 +1,17 @@
 version: '2.1'
 
 services:
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=stebennettsjb@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=PgAdmin2019!
+    ports:
+      - "16543:80"
+    depends_on:
+      - flyway
+
   flyway:
     image: flyway/flyway
     command: -url=jdbc:postgresql://postgres:5432/movies -schemas=public -user=postgres -password=mysecretpassword migrate
@@ -18,6 +29,7 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=mysecretpassword
+      - POSTGRES_DB=movies
     healthcheck:
       test: ["CMD", "pg_isready", "-q", "-U", "postgres"]
       interval: 5s
