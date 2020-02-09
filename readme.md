@@ -14,5 +14,3 @@ Postgres database automated testing / development environment.
 ## pgadmin
 
 connect to postgres db via url: [http://localhost:16543/](http://localhost:16543/)
-
-

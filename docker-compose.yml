@@ -1,32 +1,33 @@
 version: '2.1'
 services:
+  pgtap:
+    image: hbpmip/pgtap
+    environment:
+      - DATABASE=awesome_hotel_booking
+      - USER=postgres
+      - PASSWORD=supersecret
+    volumes:
+      - ./pgtap:/test
+    depends_on:
+      - flyway
 
   pgadmin:
     image: dpage/pgadmin4
     environment:
-      - PGADMIN_DEFAULT_EMAIL=${PGADMIN}
-      - PGADMIN_DEFAULT_PASSWORD=${PGPASSWORD}
+      - PGADMIN_DEFAULT_EMAIL=stebennettsjb@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=PgAdmin2019!
     ports:
       - "16543:80"
     depends_on:
-      - db
-
-  pgtap:
-    image: hbpmip/pgtap
-    environment:
-      - DATABASE=${DATABASE}
-      - USER=${USERNAME}
-      - PASSWORD=${PASSWORD}
-    volumes:
-      - ./pgtap:/test
-    depends_on:
-      - pgadmin
+      - flyway
 
   flyway:
     image: flyway/flyway
-    command: -url=jdbc:postgresql://db:5432/${DATABASE} -schemas=public -user=${USERNAME} -password=${PASSWORD} migrate
+    command: -url=jdbc:postgresql://db:5432/awesome_hotel_booking -schemas=public -user=postgres -password=supersecret migrate
     volumes:
       - ./sql:/flyway/sql
+    healthcheck:
+      test: "exit 0"
     depends_on:
       db:
         condition: service_healthy
@@ -36,9 +37,9 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_USER=${USERNAME}
-      - POSTGRES_PASSWORD=${PASSWORD}
-      - POSTGRES_DB=${DATABASE}
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=supersecret
+      - POSTGRES_DB=awesome_hotel_booking
     healthcheck:
       test: ["CMD", "pg_isready", "-q", "-U", "postgres"]
       interval: 5s
